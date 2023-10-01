@@ -31,6 +31,22 @@ const App = () => {
     setPoints(copy);
   };
 
+  const mostVoted = () => {
+    let maximoValor = 0;
+    let claveMaxima = 0;
+
+    for (const clave in points) {
+      if (points.hasOwnProperty(clave)) {
+        const valor = points[clave];
+        if (valor > maximoValor) {
+          maximoValor = valor;
+          claveMaxima = clave;
+        }
+      }
+    }
+    return claveMaxima;
+  };
+
   return (
     <div>
       {anecdotes[selected]}
@@ -45,6 +61,8 @@ const App = () => {
         next anecdote
       </button>
       <button onClick={voteAnecdote}>vote</button>
+      <h2>Anecdote with most votes</h2>
+      {anecdotes[mostVoted()]}
     </div>
   );
 };
