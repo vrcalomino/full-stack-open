@@ -2,18 +2,21 @@ import { useEffect, useState } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
+import Notification from "./components/Notification";
 import phonebookServices from "./services/phonebookServices";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
+  const [newName, setNewName] = useState("");
+  const [newNumber, setNewNumber] = useState("");
+  const [search, setSearch] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
   useEffect(() => {
     phonebookServices.fetchAllPeople().then((response) => {
       setPersons(response.data);
     });
   }, []);
-  const [newName, setNewName] = useState("");
-  const [newNumber, setNewNumber] = useState("");
-  const [search, setSearch] = useState("");
 
   const handleDeletion = (personId) => {
     phonebookServices.deletePerson(personId).then((response) => {
@@ -29,7 +32,10 @@ const App = () => {
     if (found) {
       if (window.confirm(`Do you want to change ${newName} number?`)) {
         phonebookServices.changeNumber(found.id, newPerson).then((response) => {
-          console.log("Changed number succesfully!");
+          setSuccessMessage(`Changed ${newName} number succesfully!`);
+          setTimeout(() => {
+            setSuccessMessage("");
+          }, 5000);
           const updatedPersons = persons.map((person) => {
             if (person.name === newName) {
               return { ...person, number: newNumber };
@@ -48,7 +54,10 @@ const App = () => {
     const copy = [...persons];
     phonebookServices.addPerson(newPerson).then((response) => {
       setPersons(copy.concat(response.data));
-      console.log("Stored correctly");
+      setSuccessMessage(`Added ${newName} succesfully!`);
+      setTimeout(() => {
+        setSuccessMessage("");
+      }, 5000);
     });
     setNewName("");
     setNewNumber("");
@@ -57,6 +66,10 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification
+        message={successMessage}
+        className="success"
+      />
       <Filter
         value={search}
         setSearch={setSearch}
