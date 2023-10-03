@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
-import axios from "axios";
+import phonebookServices from "./services/phonebookServices";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   useEffect(() => {
-    axios.get("http://localhost:3001/persons").then((response) => {
+    phonebookServices.fetchAllPeople().then((response) => {
       setPersons(response.data);
     });
   }, []);
@@ -26,7 +26,7 @@ const App = () => {
     }
     const newPerson = { name: newName, number: newNumber };
     const copy = [...persons];
-    axios.post("http://localhost:3001/persons", newPerson).then((response) => {
+    phonebookServices.addPerson(newPerson).then((response) => {
       console.log("Stored correctly");
     });
     setPersons(copy.concat(newPerson));
