@@ -26,6 +26,9 @@ const App = () => {
     }
     const newPerson = { name: newName, number: newNumber };
     const copy = [...persons];
+    axios.post("http://localhost:3001/persons", newPerson).then((response) => {
+      console.log("Stored correctly");
+    });
     setPersons(copy.concat(newPerson));
     setNewName("");
     setNewNumber("");
