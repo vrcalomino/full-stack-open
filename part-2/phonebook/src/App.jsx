@@ -1,4 +1,7 @@
 import { useState } from "react";
+import Filter from "./components/Filter";
+import PersonForm from "./components/PersonForm";
+import Persons from "./components/Persons";
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -27,45 +30,24 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      search{" "}
-      <input
+      <Filter
         value={search}
-        onChange={(e) => setSearch(e.target.value)}
+        setSearch={setSearch}
       />
       <h3>add a new contact</h3>
-      <form onSubmit={handleSubmit}>
-        <div>
-          name:{" "}
-          <input
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-          />
-          <div>
-            number:{" "}
-            <input
-              value={newNumber}
-              onChange={(e) => setNewNumber(e.target.value)}
-            />
-          </div>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <PersonForm
+        handleSubmit={handleSubmit}
+        newName={newName}
+        setNewName={setNewName}
+        newNumber={newNumber}
+        setNewNumber={setNewNumber}
+      />
+
       <h2>Numbers</h2>
-      {search.length === 0
-        ? persons.map((person) => (
-            <p key={person.name}>
-              {person.name} {person.number}
-            </p>
-          ))
-        : persons
-            .filter((person) => person.name.toLowerCase().includes(search))
-            .map((person) => (
-              <p key={person.name}>
-                {person.name} {person.number}
-              </p>
-            ))}
+      <Persons
+        search={search}
+        persons={persons}
+      />
     </div>
   );
 };
