@@ -6,6 +6,12 @@ const App = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const found = persons.find((person) => person.name === newName);
+    if (found) {
+      alert(`${newName} is already in the phonebook`);
+      setNewName("");
+      return;
+    }
     const newPerson = { name: newName };
     const copy = [...persons];
     setPersons(copy.concat(newPerson));
