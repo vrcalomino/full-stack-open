@@ -11,6 +11,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [search, setSearch] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     phonebookServices.fetchAllPeople().then((response) => {
@@ -19,10 +20,18 @@ const App = () => {
   }, []);
 
   const handleDeletion = (personId) => {
-    phonebookServices.deletePerson(personId).then((response) => {
-      const newPersons = persons.filter((person) => person.id !== personId);
-      setPersons(newPersons);
-    });
+    phonebookServices
+      .deletePerson(personId)
+      .then((response) => {
+        const newPersons = persons.filter((person) => person.id !== personId);
+        setPersons(newPersons);
+      })
+      .catch((error) => {
+        setErrorMessage(`Data was erased already!`);
+        setTimeout(() => {
+          setErrorMessage("");
+        }, 5000);
+      });
   };
 
   const handleSubmit = (e) => {
@@ -31,19 +40,27 @@ const App = () => {
     const newPerson = { name: newName, number: newNumber };
     if (found) {
       if (window.confirm(`Do you want to change ${newName} number?`)) {
-        phonebookServices.changeNumber(found.id, newPerson).then((response) => {
-          setSuccessMessage(`Changed ${newName} number succesfully!`);
-          setTimeout(() => {
-            setSuccessMessage("");
-          }, 5000);
-          const updatedPersons = persons.map((person) => {
-            if (person.name === newName) {
-              return { ...person, number: newNumber };
-            }
-            return person;
+        phonebookServices
+          .changeNumber(found.id, newPerson)
+          .then((response) => {
+            setSuccessMessage(`Changed ${newName} number succesfully!`);
+            setTimeout(() => {
+              setSuccessMessage("");
+            }, 5000);
+            const updatedPersons = persons.map((person) => {
+              if (person.name === newName) {
+                return { ...person, number: newNumber };
+              }
+              return person;
+            });
+            setPersons(updatedPersons);
+          })
+          .catch((error) => {
+            setErrorMessage(`${newName} data was erased already!`);
+            setTimeout(() => {
+              setErrorMessage("");
+            }, 5000);
           });
-          setPersons(updatedPersons);
-        });
       }
 
       setNewName("");
@@ -69,6 +86,10 @@ const App = () => {
       <Notification
         message={successMessage}
         className="success"
+      />
+      <Notification
+        message={errorMessage}
+        className="error"
       />
       <Filter
         value={search}
