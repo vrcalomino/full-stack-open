@@ -3,8 +3,11 @@ const Persons = (props) => {
     <>
       {props.search.length === 0
         ? props.persons.map((person) => (
-            <p key={person.name}>
-              {person.name} {person.number}
+            <p key={person.id}>
+              {person.name} {person.number}{" "}
+              <button onClick={() => props.handleDeletion(person.id)}>
+                delete
+              </button>
             </p>
           ))
         : props.persons
@@ -12,8 +15,11 @@ const Persons = (props) => {
               person.name.toLowerCase().includes(props.search)
             )
             .map((person) => (
-              <p key={person.name}>
-                {person.name} {person.number}
+              <p key={person.id}>
+                {person.name} {person.number}{" "}
+                <button onClick={() => props.handleDeletion(person.id)}>
+                  delete
+                </button>
               </p>
             ))}
     </>

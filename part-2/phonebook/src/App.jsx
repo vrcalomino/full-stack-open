@@ -15,6 +15,13 @@ const App = () => {
   const [newNumber, setNewNumber] = useState("");
   const [search, setSearch] = useState("");
 
+  const handleDeletion = (personId) => {
+    phonebookServices.deletePerson(personId).then((response) => {
+      const newPersons = persons.filter((person) => person.id !== personId);
+      setPersons(newPersons);
+    });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const found = persons.find((person) => person.name === newName);
@@ -54,6 +61,7 @@ const App = () => {
       <Persons
         search={search}
         persons={persons}
+        handleDeletion={handleDeletion}
       />
     </div>
   );
