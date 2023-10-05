@@ -5,6 +5,7 @@ function App() {
   const [search, setSearch] = useState("");
   const [countries, setCountries] = useState([]);
   const [founded, setFounded] = useState([]);
+  const [displayStates, setDisplayStates] = useState({});
 
   useEffect(() => {
     countryService.getAll().then((response) => {
@@ -24,6 +25,15 @@ function App() {
 
     setFounded(aux);
     console.log("Founded: ", founded);
+  };
+
+  const handleShow = (country) => {
+    const newDisplayStates = { ...displayStates };
+
+    newDisplayStates[country.cca2] =
+      newDisplayStates[country.cca2] === "block" ? "none" : "block";
+
+    setDisplayStates(newDisplayStates);
   };
   return (
     <div>
@@ -53,7 +63,34 @@ function App() {
         </div>
       ) : founded.length < 10 ? (
         founded.map((country) => (
-          <p key={country.cca2}>{country.name.common}</p>
+          <div key={country.cca2}>
+            {country.name.common}
+            <button
+              value={country}
+              onClick={() => handleShow(country)}
+            >
+              show
+            </button>
+            <div
+              id={country.cca2}
+              style={{ display: displayStates[country.cca2] || "none" }}
+            >
+              <h1>{country.name.common}</h1>
+              <p>capital {country.capital[0]}</p>
+              <p>area {country.area}</p>
+              languages:
+              <ul>
+                {Object.values(country.languages).map((language) => {
+                  return <li key={language}>{language}</li>;
+                })}
+              </ul>
+              <img
+                src={country.flags.svg}
+                alt={country.flags.alt}
+                width="200px"
+              />
+            </div>
+          </div>
         ))
       ) : null}
     </div>
