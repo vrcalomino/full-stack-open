@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import countryService from "./services/countryService";
 
+const apiKey = "2cf275d14a8f942bab254365801459c6";
+
 function App() {
   const [search, setSearch] = useState("");
   const [countries, setCountries] = useState([]);
   const [founded, setFounded] = useState([]);
   const [displayStates, setDisplayStates] = useState({});
+  const [weather, setWeather] = useState(null);
+  const [weatherImgUrl, setWeatherImgUrl] = useState(null);
 
   useEffect(() => {
     countryService.getAll().then((response) => {
@@ -24,8 +28,14 @@ function App() {
     });
 
     setFounded(aux);
-    console.log("Founded: ", founded);
   };
+
+  useEffect(() => {
+    if (founded.length === 1) {
+      const country = founded[0];
+      countryWeather(country.latlng[0], country.latlng[1]);
+    }
+  }, [founded]);
 
   const handleShow = (country) => {
     const newDisplayStates = { ...displayStates };
@@ -34,7 +44,19 @@ function App() {
       newDisplayStates[country.cca2] === "block" ? "none" : "block";
 
     setDisplayStates(newDisplayStates);
+    countryWeather(country.latlng[0], country.latlng[1]);
   };
+
+  const countryWeather = async (lat, lon) => {
+    try {
+      const response = await countryService.getWeather(lat, lon, apiKey);
+      setWeather(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div>
       find countries{" "}
@@ -60,6 +82,16 @@ function App() {
             alt={founded[0].flags.alt}
             width="200px"
           />
+          {weather ? (
+            <div>
+              <h2>Weather in {founded[0].capital[0]}</h2>
+              <p>temperature {Math.floor(weather.main.temp - 273.15)}°C</p>
+              <img
+                src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+              />
+              <p>wind speed: {weather.wind.speed} m/s</p>
+            </div>
+          ) : null}
         </div>
       ) : founded.length < 10 ? (
         founded.map((country) => (
@@ -89,6 +121,16 @@ function App() {
                 alt={country.flags.alt}
                 width="200px"
               />
+              {weather ? (
+                <div>
+                  <h2>Weather in {country.capital[0]}</h2>
+                  <p>temperature {Math.floor(weather.main.temp - 273.15)}°C</p>
+                  <img
+                    src={`https://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
+                  />
+                  <p>wind speed: {weather.wind.speed} m/s</p>
+                </div>
+              ) : null}
             </div>
           </div>
         ))
