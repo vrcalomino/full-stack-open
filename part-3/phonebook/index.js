@@ -30,6 +30,14 @@ app.get("/persons", (req, res) => {
   res.send(persons);
 });
 
+app.get("/info", (req, res) => {
+  res.send(
+    `phonebook has info for ${persons.length} people <br /> ${new Date(
+      8.64e15
+    ).toString()}`
+  );
+});
+
 app.listen(PORT || 3002, (req, res) => {
   console.log(`Listening on ${PORT}`);
 });
