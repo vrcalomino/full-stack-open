@@ -1,9 +1,10 @@
 const express = require("express");
 
 const app = express();
+app.use(express.json());
 
 const PORT = 3001;
-const persons = [
+let persons = [
   {
     id: 1,
     name: "Arto Hellas",
@@ -55,6 +56,18 @@ app.delete("/persons/:id", (req, res) => {
   } else {
     res.status(404).end();
   }
+});
+
+app.post("/persons", (req, res) => {
+  const body = req.body;
+  const newId = Math.floor(Math.random() * 100);
+  const newPerson = {
+    name: body.name,
+    number: body.number,
+    id: newId,
+  };
+  persons = persons.concat(newPerson);
+  res.send(newPerson).status(200);
 });
 
 app.listen(PORT || 3002, (req, res) => {
