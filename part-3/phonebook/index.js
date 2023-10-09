@@ -60,6 +60,19 @@ app.delete("/persons/:id", (req, res) => {
 
 app.post("/persons", (req, res) => {
   const body = req.body;
+  if (!body.name || !body.number) {
+    return res.status(400).json({
+      error: "Name or number missing",
+    });
+  }
+
+  let matchingPersons = persons.filter((person) => person.name === body.name);
+  if (matchingPersons.length > 0) {
+    return res.status(400).json({
+      error: `${body.name} is already in the phonebook`,
+    });
+  }
+
   const newId = Math.floor(Math.random() * 100);
   const newPerson = {
     name: body.name,
