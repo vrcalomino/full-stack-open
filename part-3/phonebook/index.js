@@ -3,7 +3,19 @@ const morgan = require("morgan");
 
 const app = express();
 app.use(express.json());
-app.use(morgan("tiny"));
+app.use(
+  morgan((tokens, req, res) => {
+    return [
+      tokens.method(req, res),
+      tokens.url(req, res),
+      tokens.status(req, res),
+      JSON.stringify(req.body),
+      "-",
+      tokens["response-time"](req, res),
+      "ms",
+    ].join(" ");
+  })
+);
 
 const PORT = 3001;
 let persons = [
@@ -71,7 +83,7 @@ app.post("/persons", (req, res) => {
   let matchingPersons = persons.filter((person) => person.name === body.name);
   if (matchingPersons.length > 0) {
     return res.status(400).json({
-      error: `${body.name} is already in the phonebook`,
+      error: `name already is in the phonebook`,
     });
   }
 
