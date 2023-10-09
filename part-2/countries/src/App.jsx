@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import countryService from "./services/countryService";
 
-const apiKey = "2cf275d14a8f942bab254365801459c6";
+const apiKey = ""; // replace api key or use env variable
 
 function App() {
   const [search, setSearch] = useState("");
