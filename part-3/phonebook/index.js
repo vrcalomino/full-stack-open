@@ -38,6 +38,15 @@ app.get("/info", (req, res) => {
   );
 });
 
+app.get("/persons/:id", (req, res) => {
+  const id = req.params.id;
+  if (persons[id]) {
+    res.send(persons[id]);
+  } else {
+    res.status(404).end();
+  }
+});
+
 app.listen(PORT || 3002, (req, res) => {
   console.log(`Listening on ${PORT}`);
 });
