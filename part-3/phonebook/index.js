@@ -112,6 +112,11 @@ app.put("/persons/:id", (req, res, next) => {
 const errorHandler = (error, request, response, next) => {
   console.error(error.message);
 
+  if (error.name === "ValidationError") {
+    console.log("Here");
+    return response.status(400).json(error);
+  }
+
   next(error);
 };
 
