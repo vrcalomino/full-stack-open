@@ -5,6 +5,8 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const Contact = require("./models/contact.js");
 
+let persons = [];
+
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -23,34 +25,11 @@ app.use(
 );
 app.use(express.static("dist"));
 
-let persons = [
-  {
-    id: 1,
-    name: "Arto Hellas",
-    number: "040-123456",
-  },
-  {
-    id: 2,
-    name: "Ada Lovelace",
-    number: "39-44-5323523",
-  },
-  {
-    id: 3,
-    name: "Dan Abramov",
-    number: "12-43-234345",
-  },
-  {
-    id: 4,
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
-  },
-];
-
 app.get("/persons", (req, res) => {
   Contact.find({}).then((result) => {
     res.send(result);
+    persons = result;
   });
-  //res.send(persons);
 });
 
 app.get("/info", (req, res) => {
@@ -95,14 +74,19 @@ app.post("/persons", (req, res) => {
     });
   }
 
-  const newId = Math.floor(Math.random() * 100);
-  const newPerson = {
+  const contact = new Contact({
     name: body.name,
     number: body.number,
-    id: newId,
-  };
-  persons = persons.concat(newPerson);
-  res.send(newPerson).status(200);
+  });
+  contact
+    .save()
+    .then((result) => {
+      console.log("Contact saved!");
+      res.status(200).end();
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 });
 
 app.listen(process.env.PORT || 3002, (req, res) => {
