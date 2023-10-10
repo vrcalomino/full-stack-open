@@ -1,6 +1,9 @@
+require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
+const mongoose = require("mongoose");
+const Contact = require("./models/contact.js");
 
 const app = express();
 app.use(express.json());
@@ -20,7 +23,6 @@ app.use(
 );
 app.use(express.static("dist"));
 
-const PORT = 3001;
 let persons = [
   {
     id: 1,
@@ -45,7 +47,10 @@ let persons = [
 ];
 
 app.get("/persons", (req, res) => {
-  res.send(persons);
+  Contact.find({}).then((result) => {
+    res.send(result);
+  });
+  //res.send(persons);
 });
 
 app.get("/info", (req, res) => {
@@ -100,6 +105,6 @@ app.post("/persons", (req, res) => {
   res.send(newPerson).status(200);
 });
 
-app.listen(PORT || 3002, (req, res) => {
-  console.log(`Listening on ${PORT}`);
+app.listen(process.env.PORT || 3002, (req, res) => {
+  console.log(`Listening on ${process.env.PORT}`);
 });
