@@ -42,13 +42,13 @@ app.get("/info", (req, res) => {
   );
 });
 
-app.get("/persons/:id", (req, res) => {
+app.get("/persons/:id", (req, res, next) => {
   const id = req.params.id;
-  if (persons[id]) {
-    res.send(persons[id]);
-  } else {
-    res.status(404).end();
-  }
+  Contact.findById(id)
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((error) => next(error));
 });
 
 app.delete("/persons/:id", (req, res, next) => {
