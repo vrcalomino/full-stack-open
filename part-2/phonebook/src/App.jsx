@@ -69,13 +69,21 @@ const App = () => {
     }
 
     const copy = [...persons];
-    phonebookServices.addPerson(newPerson).then((response) => {
-      setPersons(copy.concat(response.data));
-      setSuccessMessage(`Added ${newName} succesfully!`);
-      setTimeout(() => {
-        setSuccessMessage("");
-      }, 5000);
-    });
+    phonebookServices
+      .addPerson(newPerson)
+      .then((response) => {
+        setPersons(copy.concat(response.data));
+        setSuccessMessage(`Added ${newName} succesfully!`);
+        setTimeout(() => {
+          setSuccessMessage("");
+        }, 5000);
+      })
+      .catch((error) => {
+        setErrorMessage(error.response.data.message);
+        setTimeout(() => {
+          setErrorMessage("");
+        }, 5000);
+      });
     setNewName("");
     setNewNumber("");
   };
