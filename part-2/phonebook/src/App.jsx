@@ -79,7 +79,6 @@ const App = () => {
         }, 5000);
       })
       .catch((error) => {
-        console.log(error);
         setErrorMessage(error.response.data.message);
         setTimeout(() => {
           setErrorMessage("");
