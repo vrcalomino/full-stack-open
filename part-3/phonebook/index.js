@@ -51,12 +51,13 @@ app.get("/persons/:id", (req, res) => {
 
 app.delete("/persons/:id", (req, res) => {
   const id = req.params.id;
-  if (persons[id]) {
-    persons.pop(id);
-    res.status(200).end();
-  } else {
-    res.status(404).end();
-  }
+  Contact.findByIdAndRemove(id)
+    .then((result) => {
+      res.status(204).end();
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 });
 
 app.post("/persons", (req, res) => {
