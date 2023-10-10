@@ -25,11 +25,13 @@ app.use(
 );
 app.use(express.static("dist"));
 
-app.get("/persons", (req, res) => {
-  Contact.find({}).then((result) => {
-    res.send(result);
-    persons = result;
-  });
+app.get("/persons", (req, res, next) => {
+  Contact.find({})
+    .then((result) => {
+      res.send(result);
+      persons = result;
+    })
+    .catch((error) => next(error));
 });
 
 app.get("/info", (req, res) => {
@@ -55,9 +57,7 @@ app.delete("/persons/:id", (req, res) => {
     .then((result) => {
       res.status(204).end();
     })
-    .catch((error) => {
-      console.log(error);
-    });
+    .catch((error) => next(error));
 });
 
 app.post("/persons", (req, res) => {
@@ -85,10 +85,16 @@ app.post("/persons", (req, res) => {
       console.log("Contact saved!");
       res.status(200).end();
     })
-    .catch((error) => {
-      console.log(error);
-    });
+    .catch((error) => next(error));
 });
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message);
+
+  next(error);
+};
+
+app.use(errorHandler);
 
 app.listen(process.env.PORT || 3002, (req, res) => {
   console.log(`Listening on ${process.env.PORT}`);
