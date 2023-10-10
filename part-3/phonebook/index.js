@@ -51,7 +51,7 @@ app.get("/persons/:id", (req, res) => {
   }
 });
 
-app.delete("/persons/:id", (req, res) => {
+app.delete("/persons/:id", (req, res, next) => {
   const id = req.params.id;
   Contact.findByIdAndRemove(id)
     .then((result) => {
@@ -60,7 +60,7 @@ app.delete("/persons/:id", (req, res) => {
     .catch((error) => next(error));
 });
 
-app.post("/persons", (req, res) => {
+app.post("/persons", (req, res, next) => {
   const body = req.body;
   if (!body.name || !body.number) {
     return res.status(400).json({
@@ -84,6 +84,27 @@ app.post("/persons", (req, res) => {
     .then((result) => {
       console.log("Contact saved!");
       res.status(200).end();
+    })
+    .catch((error) => next(error));
+});
+
+app.put("/persons/:id", (req, res, next) => {
+  const id = req.params.id;
+  const body = req.body;
+  if (!body.name || !body.number) {
+    return res.status(400).json({
+      error: "Name or number missing",
+    });
+  }
+
+  const contact = {
+    name: body.name,
+    number: body.number,
+  };
+
+  Contact.findByIdAndUpdate(id, contact, { new: true })
+    .then((result) => {
+      res.json(result);
     })
     .catch((error) => next(error));
 });
